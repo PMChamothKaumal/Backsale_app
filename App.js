@@ -1,104 +1,70 @@
 //rnfe
-import { Text, View, Button,StyleSheet,Animated,Easing,Dimensions } from 'react-native'
+import { Text, View, ImageBackground, Dimensions, StyleSheet, ActivityIndicator } from 'react-native'
 import React from 'react'
-import ajax from './Screens/ajax';
-import DealList from './Screens/DealList';
-import DealDetail from './Screens/DealDetail';
-import SearchBar from './Screens/SearchBar';
+import { BarIndicator, } from 'react-native-indicators';
+import Home from './Screens1/Home';
+import Login from './Screens1/Login';
+import { NavigationContainer } from '@react-navigation/native';
+import { Header, createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import Signup from './Screens1/Signup';
+import About from './Screens1/About';
+
+const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
+const screenHeight = Dimensions.get('window').height;
+const screenWidth = Dimensions.get('window').width;
+
+const App = () => {
+
+  return (
+    /*<ImageBackground source={require('./Components/2.4.jpg')} resizeMode="cover"style={styles.image}>
+      <View style={styles.container}>
+          <View style={{marginTop:60}}>
+            <Text style={styles.view}>Welcome To</Text>
+            <Text style={styles.view}>NoTeS_+</Text>
+          </View>
+          <View style={styles.view2}>
+            <BarIndicator color='white'/>
+          </View>
+      </View>
+    </ImageBackground>*/
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>
+        <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
+        <Stack.Screen name="Signup" component={Signup} options={{headerShown:false}}/>
+      </Stack.Navigator>
+      
+    </NavigationContainer>
 
 
-
-
-export default class App extends React.Component {
-
-  titleXPos=new Animated.Value(0);
-  state={
-    deals:[],
-    dealsFormSearch:[],
-    currentDealId:null,
-
-  };
-  animateTitle=(direction=1)=>{
-    const width=Dimensions.get('window').width-150;
-    Animated.timing(
-      this.titleXPos,{toValue:direction*(width/2), duration:1000,
-      easing:Easing.linear}
-    ).start(({finished})=>{
-      if(finished){
-      this.animateTitle(-1 *direction);}});
-  
-  };
-
-    async componentDidMount(){
-    
-      const deals = await ajax.fetchInitialDeals();
-      this.setState({deals});
-    };
-    searchDeals= async(searchTerm)=>{
-      let dealsFormSearch=[];
-      if(searchTerm){
-        dealsFormSearch=await ajax.fetchDealsSearchResults(searchTerm);
-      }
-      this.setState({dealsFormSearch});
-    };
-    setCurrentDeal=(dealId)=>{
-      this.setState({
-        currentDealId:dealId
-      });
-    };
-    unsetCurrentDeal=()=>{
-      this.setState({
-        currentDealId:null,
-      });
-    };
-    currentDeal=()=>{
-      return this.state.deals.find(
-        (deal)=>deal.key===this.state.currentDealId
-      );
-    }
-    render(){
-      if(this.state.currentDealId){
-        return (
-        <View style={styles.main}>
-        <DealDetail initialDealData={this.currentDeal()}
-        onBack={this.unsetCurrentDeal}/>
-        </View>
-        );
-      }
-      const dealsToDisplay=
-      this.state.dealsFormSearch.length>0
-      ? this.state.dealsFormSearch
-      : this.state.deals
-
-      if(dealsToDisplay.length>0){
-        return(
-        <View style={styles.main}>
-          <SearchBar searchDeals={this.searchDeals}/>
-          <DealList deals={dealsToDisplay} onItemPress={this.setCurrentDeal}/>
-        </View>
-        );
-      }
-    return(
-    <Animated.View style={[{left:this.titleXPos}, styles.container]}>
-        <Text style={styles.header}>Back_Sale</Text>
-    </Animated.View>
-    );
-    }
+  )
 }
+
 const styles = StyleSheet.create({
-  container:{
-    flex:1, 
-    justifyContent:'center',
-    alignItems:'center', 
-    color:'black'
+  container: {
+    flex: 1,
+
   },
-  main:{
-    marginTop:30,
+  image: {
+    flex: 1,
+    justifyContent: 'center',
+    resizeMode: 'cover',
+    height: screenHeight,
+    width: screenWidth,
   },
-  header:{
-    fontSize:40,
-    color:'black'
+  view: {
+    fontSize: 52,
+    textAlign: "center",
+    color: 'rgb(221, 230, 237)',
+    fontWeight: "bold"
+  }, view2: {
+    marginTop: 100
   }
+
+
 })
+export default App
 
 
