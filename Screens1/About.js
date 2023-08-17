@@ -1,13 +1,14 @@
 import { View, Text,StyleSheet,Image,ImageBackground,Dimensions,ScrollView} from 'react-native'
 import React from 'react'
 import { Avatar, Card, } from 'react-native-paper';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
 
 const About = () => {
   return (
-
+    <KeyboardAwareScrollView>
     <ImageBackground source={require('../Components/2.5.jpg')} resizeMode="cover"style={Styles.image}>
     <View style={{flex:1}}>
 
@@ -54,6 +55,7 @@ const About = () => {
 
     </View>
     </ImageBackground>
+    </KeyboardAwareScrollView>
   )
 }
 

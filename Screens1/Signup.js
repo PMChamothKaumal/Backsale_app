@@ -1,35 +1,51 @@
-import { View, Text,StyleSheet,TouchableOpacity,ImageBackground,Dimensions } from 'react-native'
+import { View, Text,StyleSheet,TouchableOpacity,ImageBackground,Dimensions, Alert } from 'react-native'
 import React,{useState} from 'react'
 import Login from './Login'
 import { TextInput } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import Axios from "react-native-axios"
 
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
 
 const Signup = () => {
-
   const[Username,setUsername]=useState('')
   const[Email,setEmail]=useState('')
   const[ConPassword,setConPassword]=useState('')
   const[Password,setPassword]=useState('')
-
+  const[Register,setRegister]=useState('')
+  
   const SaveData = ()=>{
-    fetch('http://192.168.1.105:3000/user_credentials/save_users', {
+    
+    Axios.post('http://192.168.1.105:3000/api/note/save_users', {
     method: 'POST',
-    body: JSON.stringify({
       username: Username,
       email: Email,
       password: Password,
       conpassword:ConPassword
-    }),
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
-    },
   })
-    .then((response) => response.json())
-    .then((json) => console.log(json));
+  .then((response) => {
+    if (response.data && response.data.message) {
+      setRegister(response.data.message);
+    } else {
+      setRegister("Account created successfully");
+    }
+    Alert.alert('Alert', Register, [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      { text: 'OK', onPress: () => console.log('OK Pressed') },
+    ]);
+  })
+ 
+  .catch((error) => {
+    console.error("Error during API request:", error);
+    setRegister("An error occurred while signing up");
+  });
+  
   }
 
   const navigation = useNavigation();
@@ -51,19 +67,20 @@ const Signup = () => {
 
           <View style={{flex:3}}>
             <Text style={Styles.txt2}>    Username:</Text>
-            <TextInput mode="outlined" label="Usename" value={Username}onChangeText={(data)=> {setUsername(data)}} right={<TextInput.Affix text="/15" />} style={Styles.Inputs}/>
+            <TextInput mode="outlined" label="Usename" value={Username}onChangeText={(data)=> {setUsername(data)}} right={<TextInput.Affix text="/15" />} style={Styles.Inputs} required/>
             <Text style={Styles.txt2}>    Email Address:</Text>
-            <TextInput mode="outlined" label="Email" value={Email}onChangeText={(data)=> {setEmail(data)}} right={<TextInput.Affix text="/15" />} style={Styles.Inputs}/>
+            <TextInput mode="outlined" label="Email" value={Email}onChangeText={(data)=> {setEmail(data)}} right={<TextInput.Affix text="/15" />} style={Styles.Inputs} required/>
             <Text style={Styles.txt2}>    Password:</Text>
-            <TextInput mode="outlined" label="Password" value={Password}onChangeText={(data)=> {setPassword(data)}} secureTextEntry right={<TextInput.Icon icon="eye" />} style={Styles.Inputs}/>
+            <TextInput mode="outlined" label="Password" value={Password}onChangeText={(data)=> {setPassword(data)}} secureTextEntry right={<TextInput.Icon icon="eye" />} style={Styles.Inputs} required/>
             <Text style={Styles.txt2}>    Confirm Password:</Text>
-            <TextInput mode="outlined" label="Confirm Password" value={ConPassword}onChangeText={(data)=> {setConPassword(data)}} secureTextEntry right={<TextInput.Icon icon="eye" />} style={Styles.Inputs}/>
+            <TextInput mode="outlined" label="Confirm Password" value={ConPassword}onChangeText={(data)=> {setConPassword(data)}} secureTextEntry right={<TextInput.Icon icon="eye" />} style={Styles.Inputs} required/>
           </View>
 
           <View style={{flex:1}}>
             <TouchableOpacity style={{alignItems:'center', justifyContent:"center"}} onPress={SaveData}>
                 <Text  style={Styles.btn}>Signup</Text>
             </TouchableOpacity>
+            <Text style={{color:"white", fontSize:20}}></Text>
           </View>
 
           <View style={{flex:1}}>
