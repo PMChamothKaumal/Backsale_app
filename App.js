@@ -1,6 +1,6 @@
 //rnfe
 import { Text, View, ImageBackground, Dimensions, StyleSheet, ActivityIndicator } from 'react-native'
-import React, { useEffect, } from 'react'
+import React, { useState, useEffect } from 'react'
 import { BarIndicator, } from 'react-native-indicators';
 import Home from './Screens1/Home';
 import Login from './Screens1/Login';
@@ -12,6 +12,9 @@ import MyComponent from './Components/MyComponent';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { Menu } from 'react-native-paper';
 import About from './Screens1/About';
+import Picker from './Screens1/Picker';
+import Sc from './Screens1/sc';
+
 
 
 
@@ -30,29 +33,24 @@ function Root() {
 }
 
 const App = () => {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-      <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
-        <Stack.Screen name="Root" component={Root} options={{ headerShown: false }}/>
-        <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }}/>
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-          
- /* <NavigationContainer>
-    <Stack.Navigator>
-      <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
-      <Stack.Screen name="Home" component={Home} options={{ headerShown: false }}/>
-      <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }}/>
-      <Stack.Screen name="Comp" component={MyComponent} options={{ headerShown: false }}/>
-    </Stack.Navigator>
-  </NavigationContainer>
-  )*/
 
-}
-/*<ImageBackground source={require('./Components/2.4.jpg')} resizeMode="cover"style={styles.image}>
-  <View style={styles.container}>
+  useEffect(() => {
+    startLoading();
+  }, []);
+
+  const [loading, setLoading] = useState(false);
+  const startLoading = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 4000);
+  };
+
+  return (
+    <ImageBackground source={require('./Components/2.4.jpg')} resizeMode="cover"style={styles.image}>
+      { loading ? (
+    <View style={styles.container}>
+
       <View style={{marginTop:60}}>
         <Text style={styles.view}>Welcome To</Text>
         <Text style={styles.view}>NoTeS_+</Text>
@@ -60,8 +58,22 @@ const App = () => {
       <View style={styles.view2}>
         <BarIndicator color='white'/>
       </View>
-  </View>
-</ImageBackground>*/
+  </View>):(
+
+
+    <NavigationContainer>
+      <Stack.Navigator>
+      <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
+        <Stack.Screen name="Root" component={Root} options={{ headerShown: false }}/>
+        <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }}/>
+        <Stack.Screen name="Screen" component={Sc} options={{ headerShown: true }}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+  )}
+    </ImageBackground>
+  );
+}
+
 
 
 

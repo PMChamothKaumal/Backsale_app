@@ -27,7 +27,7 @@ function Login() {
   const [pwError, setpwError] = useState(null);
 
   const LoginData = () => {
-    Axios.post('http://192.168.1.105:3000/api/note/get_users', {
+    Axios.post('http://192.168.1.102:3000/api/note/get_users', {
       method: 'POST',
       username: Username,
       password: Password,

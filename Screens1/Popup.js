@@ -3,8 +3,28 @@ import React,{useState} from 'react'
 import { Button, Menu } from 'react-native-paper';
 
 
-
 const Popup = (props) => {
+
+    const deleteid=()=>{
+
+    fetch('https://jsonplaceholder.typicode.com/posts/1', {
+        method: 'DELETE',
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Request failed with status");
+          }
+          return response.json();  
+        })
+        .then(data => {
+          console.log(data);
+        })
+        .catch(error => {
+          console.error(error.message);
+        });
+    }
+
+        
     closeModal=(bool)=>{
         props.changeModalVisible(bool);
     }
@@ -14,6 +34,7 @@ const Popup = (props) => {
     <View style={Styles.modal}>
         
         <View>
+            
             <TouchableOpacity onPress={()=>closeModal(false)} style={Styles.touch}>
                 <Text style={Styles.txt}>Update</Text>
             </TouchableOpacity>

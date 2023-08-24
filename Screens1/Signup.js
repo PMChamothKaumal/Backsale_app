@@ -15,10 +15,15 @@ const Signup = () => {
   const[ConPassword,setConPassword]=useState('')
   const[Password,setPassword]=useState('')
   const[Register,setRegister]=useState('')
+  const[UsError,setUsError]=useState(null)
+  const[MailError,setMailError]=useState(null)
+  const[PwError,setPwError]=useState(null)
+  const[CopError,setCopError]=useState(null)
+  const[bool, setbool]=useState(true)
   
   const SaveData = ()=>{
     
-    Axios.post('http://192.168.1.105:3000/api/note/save_users', {
+    Axios.post('http://192.168.1.102:3000/api/note/save_users', {
     method: 'POST',
       username: Username,
       email: Email,
@@ -31,14 +36,6 @@ const Signup = () => {
     } else {
       setRegister("Account created successfully");
     }
-    Alert.alert('Alert', Register, [
-      {
-        text: 'Cancel',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      { text: 'OK', onPress: () => console.log('OK Pressed') },
-    ]);
   })
  
   .catch((error) => {
@@ -55,6 +52,51 @@ const Signup = () => {
       routes:[{name:"Login"}]
     })
   }
+  const validate=() => {
+    if (Username.trim() === "") {
+      setUsError("Username required.");
+      setbool(false)
+    }else{
+      setUsError("");
+    }
+    if(Email.trim()===""){
+      setMailError("Email required");
+      setbool(false)
+    }else if(!Email.includes("@")){
+      setMailError("Invalid email format");
+      setbool(false)
+    }else{
+      setMailError("");
+    }  if(Password.trim()===""){
+      setPwError("Password required");
+      setbool(false)
+    }else{
+      setPwError("");
+    }if(ConPassword.trim() === ""){
+      setCopError("Confirmation password required");
+      setbool(false)
+    }else if(ConPassword !== Password){
+      setCopError("Passwords do not match");
+      setbool(false)
+    }else{
+      setCopError("");
+    }
+  }
+  const merge = () => {
+    validate();
+    if(bool){
+      SaveData()
+    }
+    
+  }
+  const txt=()=>{
+    if(Register.trim() === "Enter correct details"){
+      return <Text style={{color:"red", fontSize:18, marginTop:10, fontWeight:"bold"}}>  {Register}</Text>;
+    }else{
+      return <Text style={{color:"green", fontSize:18, marginTop:10, fontWeight:"bold"}}>{Register}</Text>;
+    }
+  }
+
   return (
 
     <KeyboardAwareScrollView>
@@ -68,19 +110,23 @@ const Signup = () => {
           <View style={{flex:3}}>
             <Text style={Styles.txt2}>    Username:</Text>
             <TextInput mode="outlined" label="Usename" value={Username}onChangeText={(data)=> {setUsername(data)}} right={<TextInput.Affix text="/15" />} style={Styles.Inputs} required/>
+            {!!UsError && (<Text style={{color:"red"}}>   {UsError}</Text>)}
             <Text style={Styles.txt2}>    Email Address:</Text>
             <TextInput mode="outlined" label="Email" value={Email}onChangeText={(data)=> {setEmail(data)}} right={<TextInput.Affix text="/15" />} style={Styles.Inputs} required/>
+            {!!MailError && (<Text style={{color:"red"}}>   {MailError}</Text>)}
             <Text style={Styles.txt2}>    Password:</Text>
             <TextInput mode="outlined" label="Password" value={Password}onChangeText={(data)=> {setPassword(data)}} secureTextEntry right={<TextInput.Icon icon="eye" />} style={Styles.Inputs} required/>
+            {!!PwError && (<Text style={{color:"red"}}>   {PwError}</Text>)}
             <Text style={Styles.txt2}>    Confirm Password:</Text>
             <TextInput mode="outlined" label="Confirm Password" value={ConPassword}onChangeText={(data)=> {setConPassword(data)}} secureTextEntry right={<TextInput.Icon icon="eye" />} style={Styles.Inputs} required/>
+            {!!CopError && (<Text style={{color:"red"}}>   {CopError}</Text>)}
           </View>
 
           <View style={{flex:1}}>
-            <TouchableOpacity style={{alignItems:'center', justifyContent:"center"}} onPress={SaveData}>
+            <TouchableOpacity style={{alignItems:'center', justifyContent:"center"}} onPress={merge}>
                 <Text  style={Styles.btn}>Signup</Text>
             </TouchableOpacity>
-            <Text style={{color:"white", fontSize:20}}></Text>
+          {txt()}
           </View>
 
           <View style={{flex:1}}>
@@ -118,7 +164,7 @@ const Styles = StyleSheet.create({
     fontSize:16,
   },
   btn:{
-    marginTop:55,
+    marginTop:85,
     backgroundColor:'rgb(221, 230, 237)',
     width:280,
     height:40,
